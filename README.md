@@ -2,9 +2,9 @@
 Welcome to the Python Data Structures and Algorithms Implementations repository!Here you'll find various implementations of common data structures and algorithms in Python.
 
 Table of Contents
-1. Introduction
-2. Data Structures Implemented
-3. Usage
+1. [Introduction](#introduction)
+2. [Data Structures Implemented](#data-structures-implemented)
+3. [Usage](#usage)
 
 ## Introduction
 This repository aims to provide clear and concise Python implementations of fundamental data structures and algorithms. Whether you're a beginner looking to understand these concepts or an experienced programmer seeking reference implementations, you'll find these examples helpful.
