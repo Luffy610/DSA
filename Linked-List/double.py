@@ -2,44 +2,35 @@ class Node:
     def __init__(self, value):
         self.data = value
         self.next = None
+        self.prev = None
 
 
-class SingleLinkedList:
+class DoubleLinkedList:
     def __init__(self):
         self.head = None
 
     def print_list(self):
         if self.head is None:
-            print("The List is empty")
+            print("The list is empty")
         else:
-            result = ""
             temp = self.head
+            result = "None <----> "
             while temp:
-                result += (temp.data + " --> ")
+                result += temp.data + " <----> "
                 temp = temp.next
             result += "None"
             print(result)
 
-    def get_length(self):
-        count = 0
-        if self.head is None:
-            return count
-        else:
-            temp = self.head
-            while temp:
-                count += 1
-                temp = temp.next
-            return count
-
-    def insert_at_front(self, value):
+    def insert_front(self, value):
         node = Node(value)
         if self.head is None:
             self.head = node
         else:
+            self.head.prev = node
             node.next = self.head
             self.head = node
 
-    def insert_at_end(self, value):
+    def insert_end(self, value):
         node = Node(value)
         if self.head is None:
             self.head = node
@@ -48,17 +39,23 @@ class SingleLinkedList:
             while temp.next:
                 temp = temp.next
             temp.next = node
+            node.prev = temp
 
     def insert_after(self, element, value):
         node = Node(value)
         if self.head is None:
-            raise Exception("Invalid, the list is empty")
+            raise Exception("Invalid the list is empty")
         else:
             temp = self.head
             while temp:
                 if temp.data == element:
-                    node.next = temp.next
-                    temp.next = node
+                    if temp.next is None:
+                        self.insert_end(value)
+                    else:
+                        node.next = temp.next
+                        node.prev = temp
+                        temp.next.prev = node
+                        temp.next = node
                     break
                 temp = temp.next
             else:
@@ -67,81 +64,101 @@ class SingleLinkedList:
     def insert_before(self, element, value):
         node = Node(value)
         if self.head is None:
-            raise Exception("Invalid, the list is empty")
+            raise Exception("Invalid the list is empty")
         elif self.head.data == element:
-            node.next = self.head
-            self.head = node
+            self.insert_front(value)
         else:
             temp = self.head
-            while temp.next:
-                if temp.next.data == element:
-                    node.next = temp.next
-                    temp.next = node
+            while temp:
+                if temp.data == element:
+                    node.prev = temp.prev
+                    node.next = temp
+                    temp.prev.next = node
+                    temp.prev = node
                     break
                 temp = temp.next
-            else:
-                raise Exception("Element not present in the list")
 
     def delete_front(self):
         if self.head is None:
             raise Exception("Invalid the list is empty")
+        elif self.head.next is None:
+            self.head = None
         else:
+            self.head.next.prev = None
             self.head = self.head.next
 
     def delete_end(self):
         if self.head is None:
             raise Exception("Invalid the list is empty")
-        elif self.get_length() == 1:
+        elif self.head.next is None:
             self.head = None
         else:
-            prev = None
             temp = self.head
             while temp.next:
-                prev = temp
                 temp = temp.next
-            prev.next = None
+            temp.prev.next = None
+            temp.prev = None
 
-    def delete_node(self, element):
+    def delete_node(self, value):
         if self.head is None:
             raise Exception("Invalid the list is empty")
-        elif self.head.data == element:
-            self.head = self.head.next
+        elif self.head.data == value:
+            self.delete_front()
         else:
             temp = self.head
-            while temp.next:
-                if temp.next.data == element:
-                    temp.next = temp.next.next
+            while temp:
+                if temp.data == value:
+                    if temp.next is None:
+                        self.delete_end()
+                    else:
+                        temp.prev.next = temp.next
+                        temp.next.prev = temp.prev
+                        temp.next = None
+                        temp.prev = None
                     break
                 temp = temp.next
             else:
-                raise Exception("Element not present in the list")
+                raise Exception('Element not present in the list')
 
-    def search(self, element):
+    def search(self, value):
         if self.head is None:
             raise Exception("Invalid the list is empty")
         else:
             index = 0
             temp = self.head
             while temp:
-                if temp.data == element:
-                    return index
+                if temp.data == value:
+                    print(index)
+                    break
                 temp = temp.next
                 index += 1
             else:
-                raise Exception("Element not present in the list")
+                raise Exception('Element not present in the list')
 
     def reverse(self):
         if self.head is None:
             raise Exception("Invalid the list is empty")
         else:
-            prev = None
+            back = None
+            current = self.head
+            while current:
+                front = current.next
+                current.prev = front
+                current.next = back
+                back = current
+                current = front
+            self.head = back
+
+    def length(self):
+        if self.head is None:
+            print(0)
+        else:
+            count = 0
             temp = self.head
             while temp:
-                new = temp.next
-                temp.next = prev
-                prev = temp
-                temp = new
-            self.head = prev
+                temp = temp.next
+                count += 1
+            print(count)
 
 
 def display_menu():
@@ -161,47 +178,45 @@ def display_menu():
 
 
 if __name__ == "__main__":
-    single_list = SingleLinkedList()
+    double_list = DoubleLinkedList()
     while True:
         display_menu()
         choice = int(input("Enter your choice: "))
         if choice == 1:
             data = input("Enter the data you want to insert: ")
-            single_list.insert_at_front(data)
-            single_list.print_list()
+            double_list.insert_front(data)
+            double_list.print_list()
         elif choice == 2:
             data = input("Enter the data you want to insert: ")
-            single_list.insert_at_end(data)
-            single_list.print_list()
+            double_list.insert_end(data)
+            double_list.print_list()
         elif choice == 3:
             ele = input("Enter the element after which you want to insert: ")
             data = input("Enter the data you want to insert: ")
-            single_list.insert_after(ele, data)
-            single_list.print_list()
+            double_list.insert_after(ele, data)
+            double_list.print_list()
         elif choice == 4:
             ele = input("Enter the element before which you want to insert: ")
             data = input("Enter the data you want to insert: ")
-            single_list.insert_before(ele, data)
-            single_list.print_list()
+            double_list.insert_before(ele, data)
+            double_list.print_list()
         elif choice == 5:
-            single_list.delete_front()
-            single_list.print_list()
+            double_list.delete_front()
+            double_list.print_list()
         elif choice == 6:
-            single_list.delete_end()
-            single_list.print_list()
+            double_list.delete_end()
+            double_list.print_list()
         elif choice == 7:
             ele = input("Enter the element before which you want to delete: ")
-            single_list.delete_node(ele)
-            single_list.print_list()
+            double_list.delete_node(ele)
+            double_list.print_list()
         elif choice == 8:
             ele = input("Enter the element before which you want to search: ")
-            res = single_list.search(ele)
-            print(res)
+            double_list.search(ele)
         elif choice == 9:
-            single_list.reverse()
-            single_list.print_list()
+            double_list.reverse()
+            double_list.print_list()
         elif choice == 10:
-            res = single_list.get_length()
-            print(res)
+            double_list.length()
         else:
             break
