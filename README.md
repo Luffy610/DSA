@@ -1,4 +1,4 @@
-# Python Data Structures and Algorithms Implementations
+# Python Data Structures and Algorithms Implementations.
 Welcome to the Python Data Structures and Algorithms Implementations repository!Here you'll find various implementations of common data structures and algorithms in Python.
 
 Table of Contents
